@@ -1,7 +1,10 @@
 <?php namespace MSISDNService;
 
-class MnoRepository
+use Singleton\Singleton;
+
+class MnoRepository extends Singleton
 {
+  // ToDo - move to json
   private static $operators = [
     "788" => [
       "MobileCountryCode" => "289",
@@ -12606,7 +12609,7 @@ class MnoRepository
     ]
   ];
 
-  public function getAll()
+  public function getAll(): array
   {
     return static::$operators;
   }

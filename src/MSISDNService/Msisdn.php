@@ -1,8 +1,9 @@
 <?php namespace MSISDNService;
 
+use Singleton\Singleton;
 use InvalidArgumentException;
 
-class MSISDN
+class MSISDN extends Singleton
 {
   private static $minKeyLength = 3;
   private static $maxKeyLength = 7;
@@ -12,9 +13,9 @@ class MSISDN
    */
   protected $mnoRepo;
 
-  public function __construct(MnoRepository $mnoRepo)
+  final protected function __construct()
   {
-    $this->mnoRepo = $mnoRepo;
+    $this->mnoRepo = MnoRepository::getInstance();
   }
 
   /**
