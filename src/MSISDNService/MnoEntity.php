@@ -1,4 +1,4 @@
-<?php
+<?php namespace MSISDNService;
 
 class MnoEntity
 {
@@ -13,9 +13,7 @@ class MnoEntity
     foreach ($arr as $key => $val)
     {
       if (property_exists($entity, $key))
-      {
         $entity->{$key} = $val;
-      }
     }
 
     return $entity;

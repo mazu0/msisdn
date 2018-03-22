@@ -1,6 +1,8 @@
-<?php
+<?php namespace MSISDNService;
 
-class Msisdn
+use InvalidArgumentException;
+
+class MSISDN
 {
   private static $minKeyLength = 3;
   private static $maxKeyLength = 7;
@@ -75,13 +77,6 @@ class Msisdn
     if (!$valid)
       throw new InvalidArgumentException('MSISDN number is invalid: ' . $msisdn);
 
-    // keys for matching
-    $prefixKeys = [];
-    for ($i = static::$minKeyLength; $i < static::$maxKeyLength; $i++)
-    {
-      $prefixKeys[$i] = substr($msisdn, 0, $i);
-    }
-
     $operators = $this->mnoRepo->getAll();
     $mnoKeys = array_keys($operators);
 
@@ -93,6 +88,44 @@ class Msisdn
     } else {
       throw new InvalidArgumentException('MSISDN number is invalid: ' . $msisdn);
     }
+
+    return $mnoData;
+  }
+
+  public function parseWithKeys($msisdn)
+  {
+    // clean value
+    $msisdn = $this->clean($msisdn);
+
+    // validate syntax
+    $valid = $this->validate($msisdn);
+
+    if (!$valid)
+      throw new InvalidArgumentException('MSISDN number is invalid: ' . $msisdn);
+
+    // keys for matching
+    $prefixKeys = [];
+    for ($i = static::$minKeyLength; $i <= static::$maxKeyLength; $i++)
+    {
+      $prefixKeys[$i] = substr($msisdn, 0, $i);
+    }
+
+    $operators = $this->mnoRepo->getAll();
+    $mnoKeys = array_keys($operators);
+
+    $mnoData = null;
+    // match operator
+    for ($i = static::$maxKeyLength; $i >= static::$minKeyLength; --$i)
+    {
+      $key = $prefixKeys[$i];
+      if (isset($operators[$key])) {
+        $mnoData = $operators[$key];
+        break;
+      }
+    }
+
+    if ($mnoData === null)
+      throw new InvalidArgumentException('MSISDN number is invalid: ' . $msisdn);
 
     return $mnoData;
   }
