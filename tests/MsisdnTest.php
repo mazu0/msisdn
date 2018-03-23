@@ -2,7 +2,7 @@
 
 use PHPUnit\Framework\TestCase;
 
-use MSISDNService\MobileNumberEntity;
+use MSISDNService\MobileNumber;
 use MSISDNService\MSISDN;
 
 /**
@@ -76,7 +76,7 @@ final class MsisdnTest extends TestCase
     $msisdn = '38640123410';
     $service = MSISDN::getInstance();
 
-    $expectedMno = MobileNumberEntity::fromArray([
+    $expectedMno = MobileNumber::fromArray([
       "CountryISO" => "SI",
       "CountryPrefix" => "386",
       "MobileNetworkCode" => "40",
@@ -103,7 +103,7 @@ final class MsisdnTest extends TestCase
     $msisdn = '+44 7700 900663';
     $service = MSISDN::getInstance();
 
-    $expectedMno = MobileNumberEntity::fromArray([
+    $expectedMno = MobileNumber::fromArray([
       "CountryISO" => "GB",
       "CountryPrefix" => "44",
       "MobileNetworkCode" => "77",

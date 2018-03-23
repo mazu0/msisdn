@@ -68,7 +68,7 @@ class MSISDN extends Singleton
    * @param $msisdn
    * @return MobileNumberEntity|null
    */
-  public function parse(string $msisdn): MobileNumberEntity
+  public function parse(string $msisdn): MobileNumber
   {
     // clean value
     $msisdn = $this->clean($msisdn);
@@ -93,7 +93,7 @@ class MSISDN extends Singleton
     $mobileNumberData = null;
     if ($mnoData !== null) {
       // set mobile number operator data
-      $mobileNumberData = MobileNumberEntity::fromArray($mnoData);
+      $mobileNumberData = MobileNumber::fromArray($mnoData);
       // resolve subscriber number
       $mobileNumberData->SubscriberNumber = substr($msisdn, strlen($opKey));
     }

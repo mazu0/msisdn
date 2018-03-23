@@ -1,6 +1,6 @@
 <?php namespace MSISDNService;
 
-class MobileNumberEntity
+class MobileNumber
 {
   public $CountryISO;
   public $CountryPrefix;
@@ -10,7 +10,7 @@ class MobileNumberEntity
 
   public static function fromArray(array $arr): self
   {
-    $entity = new MobileNumberEntity();
+    $entity = new self();
     foreach ($arr as $key => $val)
     {
       if (property_exists($entity, $key))
