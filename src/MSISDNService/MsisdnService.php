@@ -1,26 +1,39 @@
 <?php namespace MSISDNService;
 
-use PHPUnit\Framework\Exception;
-use Singleton\Singleton;
 use InvalidArgumentException;
 
-class MSISDN extends Singleton
+class MSISDNService
 {
+  /**
+   * Shortest posible key (International calling code + Mobile network code)
+   * - International calling code length: 1
+   * - Mobile network code length: 1
+   *
+   * @var int
+   */
   private static $minKeyLength = 2;
+
+  /**
+   * Longest posible key (International calling code + Mobile network code)
+   *
+   * @var int
+   */
   private static $maxKeyLength = 7;
 
   /**
+   * Data provider
+   *
    * @var MnoRepository
    */
   protected $mnoRepo;
 
-  final protected function __construct()
+  final public function __construct()
   {
     $this->mnoRepo = MnoRepository::getInstance();
   }
 
   /**
-   * Removes unnecessary characters (plus prefix and empty spaces)
+   * Removes unnecessary characters which are still valid (plus prefix and empty spaces)
    *
    * @param $msisdn
    * @return mixed|string
@@ -66,7 +79,9 @@ class MSISDN extends Singleton
    * SN = Subscriber Number
    *
    * @param $msisdn
-   * @return MobileNumberEntity|null
+   * @return MobileNumber
+   *
+   * @throws InvalidArgumentException if the msisdn input is invalid
    */
   public function parse(string $msisdn): MobileNumber
   {
@@ -90,16 +105,16 @@ class MSISDN extends Singleton
         break;
     }
 
-    $mobileNumberData = null;
+    $mobileNumber = null;
     if ($mnoData !== null) {
       // set mobile number operator data
-      $mobileNumberData = MobileNumber::fromArray($mnoData);
+      $mobileNumber = MobileNumber::fromArray($mnoData);
       // resolve subscriber number
-      $mobileNumberData->SubscriberNumber = substr($msisdn, strlen($opKey));
+      $mobileNumber->SubscriberNumber = substr($msisdn, strlen($opKey));
     }
     else
       throw new InvalidArgumentException('MSISDN number is invalid: ' . $msisdn);
 
-    return $mobileNumberData;
+    return $mobileNumber;
   }
 }

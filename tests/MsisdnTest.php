@@ -3,7 +3,8 @@
 use PHPUnit\Framework\TestCase;
 
 use MSISDNService\MobileNumber;
-use MSISDNService\MSISDN;
+use MSISDNService\MnoRepository;
+use MSISDNService\MSISDNService;
 
 /**
  * @coversDefaultClass MSISDNService\MSISDN
@@ -11,6 +12,9 @@ use MSISDNService\MSISDN;
 final class MsisdnTest extends TestCase
 {
   /*
+   * Tests msisdn cleaning method.
+   * Removes unnecessary characters which are still valid (plus prefix and empty spaces)
+   *
    * @covers ::testClean
    */
   public function testClean()
@@ -18,7 +22,7 @@ final class MsisdnTest extends TestCase
     $msisdn = '+386 40 123 410';
     $cleanValue = '38640123410';
 
-    $service = MSISDN::getInstance();
+    $service = new MSISDNService();
 
     $this->assertEquals(
       $cleanValue,
@@ -33,7 +37,7 @@ final class MsisdnTest extends TestCase
   {
     $msisdn = '38640123410';
 
-    $service = MSISDN::getInstance();
+    $service = new MSISDNService();
 
     $this->assertEquals(
       1,
@@ -59,7 +63,7 @@ final class MsisdnTest extends TestCase
 
     $value = '386401wsad23410';
 
-    $service = MSISDN::getInstance();
+    $service = new MSISDNService();
     $service->parse($value);
   }
 
@@ -74,7 +78,7 @@ final class MsisdnTest extends TestCase
   public function testParseSimple()
   {
     $msisdn = '38640123410';
-    $service = MSISDN::getInstance();
+    $service = new MSISDNService();
 
     $expectedMno = MobileNumber::fromArray([
       "CountryISO" => "SI",
@@ -101,7 +105,7 @@ final class MsisdnTest extends TestCase
   public function testParse()
   {
     $msisdn = '+44 7700 900663';
-    $service = MSISDN::getInstance();
+    $service = new MSISDNService();
 
     $expectedMno = MobileNumber::fromArray([
       "CountryISO" => "GB",

@@ -1,8 +1,6 @@
 <?php namespace MSISDNService;
 
-use Singleton\Singleton;
-
-class MnoRepository extends Singleton
+class MnoRepository
 {
   private static $operators = [
     "788" => [
@@ -12607,6 +12605,23 @@ class MnoRepository extends Singleton
       "ProviderName" => "Telecel"
     ]
   ];
+
+  protected static $instance = null;
+
+  protected function __construct () {}
+  final private function __clone() {}
+  final private function __wakeup() {}
+
+  /**
+   * @return static
+   */
+  final public static function getInstance(): self
+  {
+    if (static::$instance === null)
+      static::$instance = new static();
+
+    return static::$instance;
+  }
 
   public function get($operatorKey): ?array
   {
