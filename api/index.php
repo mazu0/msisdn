@@ -28,11 +28,17 @@ $container['phpErrorHandler'] = $errorHandler;
 // Load mobile number operators repository
 MnoRepository::getInstance()->loadFile('../data/operators.json');
 
-$app->get('/v1/msisdn/{number}', function (Request $request, Response $response, array $args) {
-  $number = $args['number'];
+$app->map(['GET', 'POST'], '/v1/msisdn/[{msisdn}]', function (Request $request, Response $response, array $args) {
+  $msisdn = null;
+  // resolve parameter
+  $reqMethod = $request->getMethod();
+  if ($reqMethod === 'POST')
+    $msisdn = $request->getParam('msisdn');
+  else if ($reqMethod === 'GET')
+    $msisdn = $args['msisdn'];
 
   $service = new MSISDNService();
-  $r = $service->parse($number);
+  $r = $service->parse($msisdn);
 
   return $response->withJson($r);
 });

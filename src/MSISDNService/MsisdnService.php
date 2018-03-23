@@ -83,8 +83,11 @@ class MSISDNService
    *
    * @throws InvalidArgumentException if the msisdn input is invalid
    */
-  public function parse(string $msisdn): MobileNumber
+  public function parse(string $msisdn = null): MobileNumber
   {
+    if ($msisdn === null)
+      throw new InvalidArgumentException('MSISDN number is missing');
+
     // clean value
     $msisdn = $this->clean($msisdn);
 
