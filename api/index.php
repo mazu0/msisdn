@@ -2,7 +2,8 @@
 
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
-use MSISDNService\MSISDN;
+use MSISDNService\MnoRepository;
+use MSISDNService\MSISDNService;
 
 require '../vendor/autoload.php';
 
@@ -24,11 +25,14 @@ $errorHandler = function ($c) {
 $container['errorHandler'] = $errorHandler;
 $container['phpErrorHandler'] = $errorHandler;
 
+// Load mobile number operators repository
+MnoRepository::getInstance()->loadFile('../data/operators.json');
+
 $app->get('/v1/msisdn/{number}', function (Request $request, Response $response, array $args) {
   $number = $args['number'];
 
-  $parser = MSISDN::getInstance();
-  $r = $parser->parse($number);
+  $service = new MSISDNService();
+  $r = $service->parse($number);
 
   return $response->withJson($r);
 });

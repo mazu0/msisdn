@@ -11,6 +11,14 @@ use MSISDNService\MSISDNService;
  */
 final class MsisdnTest extends TestCase
 {
+  /**
+   * Load mobile number operators repository before tests
+   */
+  protected function setup()
+  {
+    MnoRepository::getInstance()->loadFile('data/operators.json');
+  }
+
   /*
    * Tests msisdn cleaning method.
    * Removes unnecessary characters which are still valid (plus prefix and empty spaces)
