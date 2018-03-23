@@ -15,11 +15,11 @@ Requirements
 
 ## Installation
 
-###Requirements:
+### Requirements:
 - Git
 - Composer
 
-###Steps:
+### Steps:
 1. Git
 ```
 git clone ssh://git@github.com/mzzz47/msisdn 
@@ -32,7 +32,7 @@ git clone ssh://git@github.com/mzzz47/msisdn
 ```
 
 4. Web server setup for Slim is described [here](https://www.slimframework.com/docs/v3/start/web-servers.html)
-Nginx example:
+Nginx example :
 ```
 server {
     listen 80;
@@ -67,12 +67,12 @@ server {
 ```
 
 ## Usage
-###GET:
+### GET:
 ```
 url: http://msisdn-ftw.net/v1/msisdn/447700900663
 ```
 
-###POST:
+### POST:
 ```
 url: http://msisdn-ftw.net/v1/msisdn/
 parameter:
@@ -81,7 +81,7 @@ parameter:
 }
 ```
 
-###Response json:
+### Response json:
 ```
 {
   "CountryISO": "GB",
