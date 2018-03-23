@@ -24,6 +24,9 @@ class Singleton
    */
   final private function __wakeup() {}
 
+  /**
+   * @return static
+   */
   final public static function getInstance()
   {
     if (static::$instance === null)

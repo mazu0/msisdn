@@ -3,7 +3,6 @@
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 use MSISDNService\MSISDN;
-use MSISDNService\MnoRepository;
 
 require '../vendor/autoload.php';
 
@@ -29,7 +28,7 @@ $app->get('/v1/msisdn/{number}', function (Request $request, Response $response,
   $number = $args['number'];
 
   $parser = MSISDN::getInstance();
-  $r = $parser->parseWithKeys($number);
+  $r = $parser->parse($number);
 
   return $response->withJson($r);
 });

@@ -2,11 +2,17 @@
 
 use PHPUnit\Framework\TestCase;
 
-use MSISDNService\MnoEntity;
+use MSISDNService\MobileNumberEntity;
 use MSISDNService\MSISDN;
 
+/**
+ * @coversDefaultClass MSISDNService\MSISDN
+ */
 final class MsisdnTest extends TestCase
 {
+  /*
+   * @covers ::testClean
+   */
   public function testClean()
   {
     $msisdn = '+386 40 123 410';
@@ -20,6 +26,9 @@ final class MsisdnTest extends TestCase
     );
   }
 
+  /*
+   * @covers ::validate
+   */
   public function testValidate()
   {
     $msisdn = '38640123410';
@@ -33,8 +42,16 @@ final class MsisdnTest extends TestCase
   }
 
   /**
+   * Test throwing InvalidArgumentException when msisdn is malformed
+   *
+   * @covers ::parse
+   *
    * @depends testClean
    * @depends testValidate
+   *
+   * @expectedException InvalidArgumentException
+   * @expectedExceptionMessage MSISDN number is invalid: 386401wsad23410
+   *
    */
   public function testParseInvalidArgument()
   {
@@ -47,21 +64,24 @@ final class MsisdnTest extends TestCase
   }
 
   /**
+   * Test parsing a simple msisdn containing only digits
+   *
+   * @covers Parse
+   *
    * @depends testClean
    * @depends testValidate
    */
-  public function testParseValid()
+  public function testParseSimple()
   {
     $msisdn = '38640123410';
     $service = MSISDN::getInstance();
 
-    $expectedMno = MnoEntity::fromArray([
-      "MobileCountryCode" => "293",
-      "MobileNetworkCode" => "40",
+    $expectedMno = MobileNumberEntity::fromArray([
       "CountryISO" => "SI",
-      "CountryName" => "Slovenia",
       "CountryPrefix" => "386",
-      "ProviderName" => "SI.Mobil"
+      "MobileNetworkCode" => "40",
+      "ProviderName" => "SI.Mobil",
+      "SubscriberNumber" => "123410"
     ]);
 
     $this->assertEquals(
@@ -71,32 +91,29 @@ final class MsisdnTest extends TestCase
   }
 
   /**
+   * Test parsing a msisdn containing a '+' prefix white spaces
+   *
+   * @covers Parse
+   *
    * @depends testClean
    * @depends testValidate
    */
-  /*
-  public function testParseWithKeysValid()
+  public function testParse()
   {
-    $start = microtime();
-    $msisdn = '38640123410';
+    $msisdn = '+44 7700 900663';
     $service = MSISDN::getInstance();
 
-    $expectedMno = MnoEntity::fromArray([
-      "MobileCountryCode" => "293",
-      "MobileNetworkCode" => "40",
-      "CountryISO" => "SI",
-      "CountryName" => "Slovenia",
-      "CountryPrefix" => "386",
-      "ProviderName" => "SI.Mobil"
+    $expectedMno = MobileNumberEntity::fromArray([
+      "CountryISO" => "GB",
+      "CountryPrefix" => "44",
+      "MobileNetworkCode" => "77",
+      "ProviderName" => "BT Group",
+      "SubscriberNumber" => "00900663"
     ]);
 
     $this->assertEquals(
       $expectedMno,
-      $service->parseWithKeys($msisdn)
+      $service->parse($msisdn)
     );
-
-    $stop = microtime();
-    $diff = round(($stop - $start) * 1000, 2);
-    echo "With Keys time: $diff ms\n";
-  }*/
+  }
 }

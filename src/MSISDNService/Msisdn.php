@@ -1,11 +1,12 @@
 <?php namespace MSISDNService;
 
+use PHPUnit\Framework\Exception;
 use Singleton\Singleton;
 use InvalidArgumentException;
 
 class MSISDN extends Singleton
 {
-  private static $minKeyLength = 3;
+  private static $minKeyLength = 2;
   private static $maxKeyLength = 7;
 
   /**
@@ -24,7 +25,7 @@ class MSISDN extends Singleton
    * @param $msisdn
    * @return mixed|string
    */
-  public function clean($msisdn)
+  public function clean(string $msisdn): string
   {
     // remove + prefix
     $msisdn = ltrim($msisdn, '+');
@@ -41,9 +42,9 @@ class MSISDN extends Singleton
    * Longest: 15 (maximum allowed by the standard ie. French Guiana 594694XXXXXXXXX)
    *
    * @param $msisdn
-   * @return int
+   * @return bool
    */
-  public function validate($msisdn)
+  public function validate(string $msisdn): bool
   {
     return preg_match('/^[1-9]{1}[0-9]{6,14}$/', $msisdn) ? true : false;
   }
@@ -65,9 +66,9 @@ class MSISDN extends Singleton
    * SN = Subscriber Number
    *
    * @param $msisdn
-   * @return MnoEntity|null
+   * @return MobileNumberEntity|null
    */
-  public function parse($msisdn)
+  public function parse(string $msisdn): MobileNumberEntity
   {
     // clean value
     $msisdn = $this->clean($msisdn);
@@ -78,56 +79,27 @@ class MSISDN extends Singleton
     if (!$valid)
       throw new InvalidArgumentException('MSISDN number is invalid: ' . $msisdn);
 
-    $operators = $this->mnoRepo->getAll();
-    $mnoKeys = array_keys($operators);
-
     $mnoData = null;
-    // match operator
-    if (preg_match('/^(' . implode('|', $mnoKeys) . ').*$/', $msisdn, $match)) {
-      $opData = $operators[$match[1]];
-      $mnoData = MnoEntity::fromArray($opData);
-    } else {
-      throw new InvalidArgumentException('MSISDN number is invalid: ' . $msisdn);
-    }
-
-    return $mnoData;
-  }
-
-  public function parseWithKeys($msisdn)
-  {
-    // clean value
-    $msisdn = $this->clean($msisdn);
-
-    // validate syntax
-    $valid = $this->validate($msisdn);
-
-    if (!$valid)
-      throw new InvalidArgumentException('MSISDN number is invalid: ' . $msisdn);
-
-    // keys for matching
-    $prefixKeys = [];
-    for ($i = static::$minKeyLength; $i <= static::$maxKeyLength; $i++)
-    {
-      $prefixKeys[$i] = substr($msisdn, 0, $i);
-    }
-
-    $operators = $this->mnoRepo->getAll();
-    $mnoKeys = array_keys($operators);
-
-    $mnoData = null;
-    // match operator
+    // best match by finding longest identifier in the lookup
+    $opKey = null;
     for ($i = static::$maxKeyLength; $i >= static::$minKeyLength; --$i)
     {
-      $key = $prefixKeys[$i];
-      if (isset($operators[$key])) {
-        $mnoData = $operators[$key];
+      $opKey = substr($msisdn, 0, $i);
+      $mnoData = $this->mnoRepo->get($opKey);
+      if ($mnoData !== null)
         break;
-      }
     }
 
-    if ($mnoData === null)
+    $mobileNumberData = null;
+    if ($mnoData !== null) {
+      // set mobile number operator data
+      $mobileNumberData = MobileNumberEntity::fromArray($mnoData);
+      // resolve subscriber number
+      $mobileNumberData->SubscriberNumber = substr($msisdn, strlen($opKey));
+    }
+    else
       throw new InvalidArgumentException('MSISDN number is invalid: ' . $msisdn);
 
-    return $mnoData;
+    return $mobileNumberData;
   }
 }

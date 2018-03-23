@@ -1,15 +1,16 @@
 <?php namespace MSISDNService;
 
-class MnoEntity
+class MobileNumberEntity
 {
-  public $MobileNetworkCode;
   public $CountryISO;
   public $CountryPrefix;
+  public $MobileNetworkCode;
   public $ProviderName;
+  public $SubscriberNumber;
 
-  public static function fromArray($arr)
+  public static function fromArray(array $arr): self
   {
-    $entity = new MnoEntity();
+    $entity = new MobileNumberEntity();
     foreach ($arr as $key => $val)
     {
       if (property_exists($entity, $key))

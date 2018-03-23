@@ -4,7 +4,6 @@ use Singleton\Singleton;
 
 class MnoRepository extends Singleton
 {
-  // ToDo - move to json
   private static $operators = [
     "788" => [
       "MobileCountryCode" => "289",
@@ -12609,16 +12608,11 @@ class MnoRepository extends Singleton
     ]
   ];
 
-  public function getAll(): array
+  public function get($operatorKey): ?array
   {
-    return static::$operators;
-  }
-
-  public function get($operatorKey)
-  {
-    if (!isset(static::$mnoOperators[$operatorKey]))
+    if (!isset(static::$operators[$operatorKey]))
       return null;
 
-    return static::$mnoOperators[$operatorKey];
+    return static::$operators[$operatorKey];
   }
 }
