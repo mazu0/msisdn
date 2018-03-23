@@ -38,7 +38,7 @@ class MSISDNService
    * @param $msisdn
    * @return mixed|string
    */
-  public function clean(string $msisdn): string
+  public function clean(string $msisdn) : string
   {
     // remove + prefix
     $msisdn = ltrim($msisdn, '+');
@@ -57,7 +57,7 @@ class MSISDNService
    * @param $msisdn
    * @return bool
    */
-  public function validate(string $msisdn): bool
+  public function validate(string $msisdn) : bool
   {
     return preg_match('/^[1-9]{1}[0-9]{6,14}$/', $msisdn) ? true : false;
   }
@@ -83,7 +83,7 @@ class MSISDNService
    *
    * @throws InvalidArgumentException if the msisdn input is invalid
    */
-  public function parse(string $msisdn = null): MobileNumber
+  public function parse(string $msisdn = null) : MobileNumber
   {
     if ($msisdn === null)
       throw new InvalidArgumentException('MSISDN number is missing');

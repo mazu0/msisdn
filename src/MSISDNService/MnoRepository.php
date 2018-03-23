@@ -33,9 +33,9 @@ class MnoRepository
   /**
    * Singleton
    *
-   * @return static
+   * @return MnoRepository
    */
-  final public static function getInstance()
+  final public static function getInstance() : MnoRepository
   {
     if (static::$instance === null)
       static::$instance = new static();
@@ -48,10 +48,9 @@ class MnoRepository
    *
    * @param $operatorKey
    * @return array|null
-   *
-   * @throws Exception if the repository is not loaded
+   * @throws \Exception if the repository is not loaded
    */
-  public function get($operatorKey)
+  public function get($operatorKey) : ?array
   {
     if (!static::$loaded)
       throw new \Exception('Repository data not loaded');
@@ -66,6 +65,8 @@ class MnoRepository
    * Loads data from a json file.
    *
    * @param string $path
+   *
+   * @return bool
    */
   public function loadFile(string $path) : bool
   {
