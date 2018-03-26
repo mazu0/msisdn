@@ -51,6 +51,7 @@ server {
 
     location ~ \.php {
       try_files $uri =404;
+      alias                   /srv/apps/msisdn/api/public/$1;
       
       fastcgi_split_path_info ^(.+\.php)(/.+)$;
       
