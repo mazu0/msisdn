@@ -1,8 +1,12 @@
 {
   "autoload": {
     "classmap": [
-      "src/"
-    ]
+      "src/",
+      "api/app/Http/Controllers/"
+    ],
+
+    "psr-4": {
+    }
   },
   "require-dev": {
     "phpunit/phpunit": "6.5.*",
