@@ -59,7 +59,7 @@ class MSISDNService
    */
   public function validate(string $msisdn) : bool
   {
-    return preg_match('/^[1-9]{1}[0-9]{6,14}$/', $msisdn) ? true : false;
+    return (bool)preg_match('/^[1-9]{1}[0-9]{6,14}$/', $msisdn);
   }
 
   /**
@@ -85,8 +85,10 @@ class MSISDNService
    */
   public function parse(string $msisdn = null) : MobileNumber
   {
-    if ($msisdn === null)
+    if ($msisdn === null) {
       throw new InvalidArgumentException('MSISDN number is missing');
+    }
+
 
     // clean value
     $msisdn = $this->clean($msisdn);
@@ -94,8 +96,9 @@ class MSISDNService
     // validate syntax
     $valid = $this->validate($msisdn);
 
-    if (!$valid)
+    if (!$valid) {
       throw new InvalidArgumentException('MSISDN number is invalid: ' . $msisdn);
+    }
 
     $mnoData = null;
     // best match by finding longest identifier in the lookup

@@ -48,7 +48,7 @@ final class MsisdnTest extends TestCase
     $service = new MSISDNService();
 
     $this->assertEquals(
-      1,
+      true,
       $service->validate($msisdn)
     );
   }
